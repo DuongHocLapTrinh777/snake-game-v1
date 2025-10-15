@@ -137,12 +137,28 @@
     function resetGame(lv=0) {
       countdownStart(lv);
     }
+    function getRandomEmptyCell(levelIdx) {
+      let empty = [];
+      for (let y = 0; y < boardSize; y++) {
+        for (let x = 0; x < boardSize; x++) {
+          if (levels[levelIdx][y][x] === 0) empty.push({x, y});
+        }
+      }
+      return empty[Math.floor(Math.random() * empty.length)];
+    }
     function startGame(lv=0) {
       level = lv;
-      snake = [{x: 7, y: 7}];
+      // Spawn rắn ở vị trí ngẫu nhiên không trùng block
+      let spawn = getRandomEmptyCell(level);
+      snake = [spawn];
       direction = {x: 0, y: -1};
       nextDirection = null;
-      food = {x: 3, y: 3};
+      // Đặt food không trùng rắn và block
+      let foodSpawn;
+      do {
+        foodSpawn = getRandomEmptyCell(level);
+      } while (foodSpawn.x === spawn.x && foodSpawn.y === spawn.y);
+      food = foodSpawn;
       score = 0;
       foodEaten = 0;
       scoreEl.textContent = 'Score: 0 | Level: ' + (level+1);
@@ -207,7 +223,6 @@
         foodEaten++;
         scoreEl.textContent = 'Score: ' + score + ' | Level: ' + (level+1);
         if (foodEaten >= 30) {
-          clearInterval(gameInterval);
           // Chuyển level
           if (level < levels.length-1) {
             showOverlay('Chúc mừng!<br>Bạn đã qua Level ' + (level+1), 'Tiếp tục', () => resetGame(level+1));
@@ -282,7 +297,5 @@
   </script>
 </body>
 </html>
-
-
 
 
