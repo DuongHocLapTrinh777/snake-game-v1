@@ -207,7 +207,6 @@
         foodEaten++;
         scoreEl.textContent = 'Score: ' + score + ' | Level: ' + (level+1);
         if (foodEaten >= 30) {
-          clearInterval(gameInterval);
           // Chuyển level
           if (level < levels.length-1) {
             showOverlay('Chúc mừng!<br>Bạn đã qua Level ' + (level+1), 'Tiếp tục', () => resetGame(level+1));
@@ -242,6 +241,40 @@
       else if (e.key === 'ArrowDown') nextDirection = {x: 0, y: 1};
       else if (e.key === 'ArrowLeft') nextDirection = {x: -1, y: 0};
       else if (e.key === 'ArrowRight') nextDirection = {x: 1, y: 0};
+    });
+    // Điều khiển vuốt cho mobile
+    let touchStartX = 0, touchStartY = 0, touchMoved = false;
+    board.addEventListener('touchstart', function(e) {
+      if (e.touches.length === 1) {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        touchMoved = false;
+      }
+    });
+    board.addEventListener('touchmove', function(e) {
+      if (e.touches.length === 1 && !touchMoved) {
+        const dx = e.touches[0].clientX - touchStartX;
+        const dy = e.touches[0].clientY - touchStartY;
+        if (Math.abs(dx) > 30 || Math.abs(dy) > 30) {
+          touchMoved = true;
+          let newDir = null;
+          if (Math.abs(dx) > Math.abs(dy)) {
+            if (dx > 0) newDir = {x: 1, y: 0}; // right
+            else newDir = {x: -1, y: 0}; // left
+          } else {
+            if (dy > 0) newDir = {x: 0, y: 1}; // down
+            else newDir = {x: 0, y: -1}; // up
+          }
+          // Không cho đi ngược
+          if (!(direction.x === -newDir.x && direction.y === -newDir.y)) {
+            direction = newDir;
+            nextDirection = null;
+          }
+        }
+      }
+    });
+    board.addEventListener('touchend', function(e) {
+      touchMoved = false;
     });
     // Bắt đầu game
     resetGame(0);
