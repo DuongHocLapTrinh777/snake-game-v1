@@ -223,6 +223,7 @@
         foodEaten++;
         scoreEl.textContent = 'Score: ' + score + ' | Level: ' + (level+1);
         if (foodEaten >= 30) {
+          clearInterval(gameInterval);
           // Chuyển level
           if (level < levels.length-1) {
             showOverlay('Chúc mừng!<br>Bạn đã qua Level ' + (level+1), 'Tiếp tục', () => resetGame(level+1));
@@ -297,5 +298,6 @@
   </script>
 </body>
 </html>
+
 
 
