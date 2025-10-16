@@ -2,8 +2,8 @@
 <html lang="vi">
 <head>
   <meta charset="utf-8" />
-  <title>Snake Game — Clean Graphical (Fullscreen Room)</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Snake Game — Mobile Fullscreen</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <style>
     :root{
       --bg-1: #061024;
@@ -11,84 +11,107 @@
       --muted: #9fb0c8;
       --accent-2: #7c5cff;
       --accent-3: #00d4ff;
-      --cell-size: 26px;
       --gap: 4px;
       --rounded: 12px;
       --shadow-lg: 0 14px 40px rgba(1,6,20,0.7);
+      /* default desktop cell size (will be overridden on small screens) */
+      --cell: 26px;
     }
     *{box-sizing:border-box}
-    /* Important: hide body scrollbar and use full viewport */
     html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;background:
       radial-gradient(800px 400px at 10% 10%, rgba(124,92,255,0.06), transparent 8%),
       radial-gradient(600px 300px at 90% 90%, rgba(0,212,255,0.04), transparent 8%),
       linear-gradient(180deg,var(--bg-1),var(--bg-2));color:#e8f3ff;-webkit-font-smoothing:antialiased;
       overflow:hidden; /* remove page scrollbar */
+      -webkit-touch-callout: none; -webkit-user-select: none; -ms-user-select: none; user-select: none;
     }
-    /* Container fills viewport, center content */
+
+    /* Layout: full viewport */
     .container{height:100vh;display:flex;align-items:center;justify-content:center;padding:18px;}
     .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:14px;padding:16px;border:1px solid rgba(255,255,255,0.03);box-shadow:var(--shadow-lg);backdrop-filter:blur(6px)}
-    .header{display:flex;align-items:center;gap:12px;margin-bottom:8px}
-    .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent-2),var(--accent-3));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:18px}
-    h1{margin:0;font-size:20px}
-    .subtitle{color:var(--muted);font-size:13px;margin-top:6px}
-
     .layout{display:flex;gap:22px;align-items:flex-start;justify-content:center;width:100%;max-width:1220px}
-    .leftPanel{width:320px;flex:0 0 320px;max-height:calc(100vh - 80px);overflow:auto;padding-right:6px} /* scroll inside panel only if needed */
+    .leftPanel{width:320px;flex:0 0 320px;max-height:calc(100vh - 80px);overflow:auto;padding-right:6px}
     .centerPanel{flex:1;display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center}
+
+    .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent-2),var(--accent-3));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:18px}
+    .subtitle{color:var(--muted);font-size:13px;margin-top:6px}
 
     .infoCard{display:flex;flex-direction:column;gap:10px}
     .infoRow{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:13px}
 
-    /* board */
+    /* Board card */
     .boardCard{position:relative;border-radius:14px;padding:18px;border:1px solid rgba(255,255,255,0.03);box-shadow:var(--shadow-lg);background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);display:flex;flex-direction:column;align-items:center}
+
+    /* Use CSS variable --cell for grid size */
     #game-board{
-      --cell: var(--cell-size);
-      width: calc(15 * var(--cell) + 14 * var(--gap));
-      height: calc(15 * var(--cell) + 14 * var(--gap));
       display:grid;
       grid-template-columns: repeat(15, var(--cell));
       grid-template-rows: repeat(15, var(--cell));
       gap: var(--gap);
-      margin:auto;
       background: linear-gradient(180deg, rgba(255,255,255,0.012), transparent);
       padding: var(--gap);
       border-radius: 10px;
       touch-action: none;
+      width: calc(15 * var(--cell) + 14 * var(--gap));
+      height: calc(15 * var(--cell) + 14 * var(--gap));
+      max-width: 100%;
+      max-height: 100%;
     }
+
     .cell{width:var(--cell);height:var(--cell);border-radius:8px;background:linear-gradient(180deg,#0e1520,#0a1118);transition:transform .12s, background .12s, box-shadow .12s;position:relative;overflow:hidden}
     .cell.snake{background:linear-gradient(180deg,#7fc4ff,#2b8aef);box-shadow:0 8px 22px rgba(43,138,239,0.2);transform:scale(1.03)}
     .cell.snake.head::after{content:'';position:absolute;inset:0;border-radius:inherit;box-shadow:0 8px 30px rgba(43,138,239,0.28), 0 0 18px rgba(124,92,255,0.06);mix-blend-mode:screen}
     .cell.food{background:linear-gradient(180deg,#ffd27a,#ff9a5a);box-shadow:0 10px 26px rgba(255,139,79,0.18);transform:scale(1.05);animation:foodPulse 1100ms infinite}
     @keyframes foodPulse{0%{transform:scale(0.98)}50%{transform:scale(1.08)}100%{transform:scale(0.98)}}
     .cell.block{background:linear-gradient(180deg,#2b2f36,#4a4f58);box-shadow:inset 0 -6px 12px rgba(0,0,0,0.4)}
-    .controls{display:flex;gap:8px;justify-content:center;margin-top:12px}
+
+    .controls{display:flex;gap:8px;margin-top:12px}
     .btn{padding:10px 14px;border-radius:12px;border:none;background:linear-gradient(90deg,var(--accent-2),var(--accent-3));color:white;font-weight:700;cursor:pointer;box-shadow:0 8px 26px rgba(124,92,255,0.14);transition:transform .12s}
     .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted);box-shadow:none}
     .btn:active{transform:translateY(1px)}
-    .controls .btn{min-width:56px;border-radius:10px;padding:8px 12px}
+
     #overlay{display:none;position:fixed;inset:0;z-index:1000;background:rgba(1,6,20,0.7);backdrop-filter:blur(6px);align-items:center;justify-content:center}
     .overlay-inner{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);text-align:center;min-width:320px;max-width:92%}
     .count{font-size:3rem;font-weight:800;margin:10px 0}
+
     /* Footer fixed so it doesn't increase page height */
     footer{color:var(--muted);text-align:center;margin-top:12px;font-size:13px;position:fixed;left:0;right:0;bottom:12px;pointer-events:none}
+
+    /* ======= Mobile responsive behaviour (no vertical scroll, board scales to viewport) ======= */
     @media (max-width:920px){
-      .container{padding:12px}
-      .layout{flex-direction:column;align-items:center}
-      .leftPanel{width:100%}
-      #game-board{transform:scale(.92);transform-origin:center;margin:auto}
+      .leftPanel{display:none} /* hide left panel on mobile */
+      .layout{width:100%;justify-content:center}
+      /* compute cell size dynamically: use the smaller of (available width / 15) and (available height / 15) */
+      /* subtract paddings for status/footer/etc (approx 140px) */
+      :root{
+        /* We'll set --cell using calc with CSS min() */
+      }
+      /* Use CSS min() to choose the smaller dimension */
+      #game-board{
+        --cell: calc(min( (100vw - 40px) / 15, (100vh - 160px) / 15 ));
+        width: calc(15 * var(--cell) + 14 * var(--gap));
+        height: calc(15 * var(--cell) + 14 * var(--gap));
+      }
+      .controls{gap:6px}
     }
+
+    @media (max-height:600px){
+      /* further reduce paddings on very short screens */
+      #game-board{ --cell: calc(min( (100vw - 28px) / 15, (100vh - 120px) / 15 )); }
+    }
+
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="layout">
+    <div class="layout" role="main">
       <div class="leftPanel">
         <div class="card">
-          <div class="header">
+          <div style="display:flex;gap:12px;align-items:center;margin-bottom:8px">
             <div class="logo">S</div>
             <div>
-              <h1>Snake — Clean</h1>
-              <div class="subtitle">Đẹp & mượt — phòng full-screen</div>
+              <h1 style="margin:0;font-size:18px">Snake — Clean</h1>
+              <div class="subtitle">Phòng full-screen (mobile tối ưu)</div>
             </div>
           </div>
 
@@ -106,11 +129,9 @@
       </div>
 
       <div class="centerPanel">
-        <div class="boardCard card">
+        <div class="boardCard card" style="width:100%;display:flex;flex-direction:column;align-items:center">
           <div id="game-board" aria-label="game board"></div>
-          <!-- particles canvas positioned absolutely inside the card -->
           <canvas id="particles" style="position:absolute;left:0;top:0;pointer-events:none;"></canvas>
-
           <div class="controls" style="margin-top:18px">
             <button id="up" class="btn ghost">▲</button>
             <button id="left" class="btn ghost">◀</button>
@@ -133,10 +154,8 @@
   <footer>&copy; <span id="year"></span> Snake Game — Clean Edition</footer>
 
   <script>
-    // Auto year
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Game constants & elements (logic unchanged)
     const boardSize = 15;
     const board = document.getElementById('game-board');
     const scoreDisplay = document.getElementById('scoreDisplay');
@@ -154,14 +173,12 @@
     let isCounting = false;
     const cells = [];
 
-    // levels (same)
     const levels = [
       Array(boardSize).fill(0).map(() => Array(boardSize).fill(0)),
       Array(boardSize).fill(0).map((_, y) => Array(boardSize).fill(0).map((_, x) => (x === 0 || x === boardSize-1 || y === 0 || y === boardSize-1) ? 1 : 0)),
       Array(boardSize).fill(0).map((_, y) => Array(boardSize).fill(0).map((_, x) => (x === Math.floor(boardSize/2) || y === Math.floor(boardSize/2)) ? 1 : 0)),
     ];
 
-    // Build grid cells
     function buildBoard(){
       board.innerHTML = '';
       cells.length = 0;
@@ -206,7 +223,6 @@
       return empty[Math.floor(Math.random()*empty.length)];
     }
 
-    // Overlay / countdown
     function showOverlayMessage(html, buttonText, onButton){
       overlayMsg.innerHTML = html;
       countdownEl.textContent = '';
@@ -257,14 +273,13 @@
       gameInterval = setInterval(move, speed);
     }
 
-    // Particles
+    // Particles & resizing: ensure canvas overlays the board area precisely
     let particles = [];
     function resizeParticles(){
       const rect = board.getBoundingClientRect();
       if (!pctx) return;
-      // place canvas over the board by positioning within board's offsetParent
-      const parent = board.parentElement;
-      const parentRect = parent.getBoundingClientRect();
+      // position canvas relative to board's parent (.boardCard)
+      const parentRect = board.parentElement.getBoundingClientRect();
       const offsetLeft = rect.left - parentRect.left;
       const offsetTop = rect.top - parentRect.top;
       particlesCanvas.style.position = 'absolute';
@@ -278,7 +293,6 @@
     }
 
     window.addEventListener('resize', resizeParticles);
-
     function spawnParticles(x,y, color='#ffd27a'){
       if (!pctx) return;
       const br = board.getBoundingClientRect();
@@ -326,7 +340,7 @@
     }
     requestAnimationFrame(particlesLoop);
 
-    // Movement & game logic
+    // Movement & logic
     function move(){
       if (isCounting) return;
       if (nextDirection){
@@ -459,4 +473,3 @@
   </script>
 </body>
 </html>
-
