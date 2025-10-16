@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="utf-8" />
-  <title>Snake Game — Clean Graphical</title>
+  <title>Snake Game — Clean Graphical (Fullscreen Room)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     :root{
@@ -17,26 +17,30 @@
       --shadow-lg: 0 14px 40px rgba(1,6,20,0.7);
     }
     *{box-sizing:border-box}
+    /* Important: hide body scrollbar and use full viewport */
     html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;background:
       radial-gradient(800px 400px at 10% 10%, rgba(124,92,255,0.06), transparent 8%),
       radial-gradient(600px 300px at 90% 90%, rgba(0,212,255,0.04), transparent 8%),
-      linear-gradient(180deg,var(--bg-1),var(--bg-2));color:#e8f3ff;-webkit-font-smoothing:antialiased;}
-    .container{max-width:1120px;margin:40px auto;padding:18px;display:flex;gap:20px;align-items:flex-start;justify-content:center}
+      linear-gradient(180deg,var(--bg-1),var(--bg-2));color:#e8f3ff;-webkit-font-smoothing:antialiased;
+      overflow:hidden; /* remove page scrollbar */
+    }
+    /* Container fills viewport, center content */
+    .container{height:100vh;display:flex;align-items:center;justify-content:center;padding:18px;}
     .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:14px;padding:16px;border:1px solid rgba(255,255,255,0.03);box-shadow:var(--shadow-lg);backdrop-filter:blur(6px)}
-    .header{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+    .header{display:flex;align-items:center;gap:12px;margin-bottom:8px}
     .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent-2),var(--accent-3));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:18px}
     h1{margin:0;font-size:20px}
     .subtitle{color:var(--muted);font-size:13px;margin-top:6px}
 
-    .layout{display:flex;gap:22px;align-items:flex-start;justify-content:center;width:100%}
-    .leftPanel{width:320px;flex:0 0 320px}
-    .centerPanel{flex:1;display:flex;flex-direction:column;gap:12px;align-items:center}
+    .layout{display:flex;gap:22px;align-items:flex-start;justify-content:center;width:100%;max-width:1220px}
+    .leftPanel{width:320px;flex:0 0 320px;max-height:calc(100vh - 80px);overflow:auto;padding-right:6px} /* scroll inside panel only if needed */
+    .centerPanel{flex:1;display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center}
 
     .infoCard{display:flex;flex-direction:column;gap:10px}
     .infoRow{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:13px}
 
     /* board */
-    .boardCard{position:relative;border-radius:14px;padding:18px;border:1px solid rgba(255,255,255,0.03);box-shadow:var(--shadow-lg);background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent)}
+    .boardCard{position:relative;border-radius:14px;padding:18px;border:1px solid rgba(255,255,255,0.03);box-shadow:var(--shadow-lg);background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);display:flex;flex-direction:column;align-items:center}
     #game-board{
       --cell: var(--cell-size);
       width: calc(15 * var(--cell) + 14 * var(--gap));
@@ -65,8 +69,8 @@
     #overlay{display:none;position:fixed;inset:0;z-index:1000;background:rgba(1,6,20,0.7);backdrop-filter:blur(6px);align-items:center;justify-content:center}
     .overlay-inner{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);text-align:center;min-width:320px;max-width:92%}
     .count{font-size:3rem;font-weight:800;margin:10px 0}
-    footer{color:var(--muted);text-align:center;margin-top:22px;font-size:13px}
-
+    /* Footer fixed so it doesn't increase page height */
+    footer{color:var(--muted);text-align:center;margin-top:12px;font-size:13px;position:fixed;left:0;right:0;bottom:12px;pointer-events:none}
     @media (max-width:920px){
       .container{padding:12px}
       .layout{flex-direction:column;align-items:center}
@@ -84,7 +88,7 @@
             <div class="logo">S</div>
             <div>
               <h1>Snake — Clean</h1>
-              <div class="subtitle">Đẹp & mượt — không có đăng nhập</div>
+              <div class="subtitle">Đẹp & mượt — phòng full-screen</div>
             </div>
           </div>
 
@@ -104,9 +108,10 @@
       <div class="centerPanel">
         <div class="boardCard card">
           <div id="game-board" aria-label="game board"></div>
+          <!-- particles canvas positioned absolutely inside the card -->
           <canvas id="particles" style="position:absolute;left:0;top:0;pointer-events:none;"></canvas>
 
-          <div class="controls">
+          <div class="controls" style="margin-top:18px">
             <button id="up" class="btn ghost">▲</button>
             <button id="left" class="btn ghost">◀</button>
             <button id="down" class="btn ghost">▼</button>
@@ -131,7 +136,7 @@
     // Auto year
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Game constants & elements
+    // Game constants & elements (logic unchanged)
     const boardSize = 15;
     const board = document.getElementById('game-board');
     const scoreDisplay = document.getElementById('scoreDisplay');
@@ -149,14 +154,14 @@
     let isCounting = false;
     const cells = [];
 
-    // Level maps
+    // levels (same)
     const levels = [
       Array(boardSize).fill(0).map(() => Array(boardSize).fill(0)),
       Array(boardSize).fill(0).map((_, y) => Array(boardSize).fill(0).map((_, x) => (x === 0 || x === boardSize-1 || y === 0 || y === boardSize-1) ? 1 : 0)),
       Array(boardSize).fill(0).map((_, y) => Array(boardSize).fill(0).map((_, x) => (x === Math.floor(boardSize/2) || y === Math.floor(boardSize/2)) ? 1 : 0)),
     ];
 
-    // Build board
+    // Build grid cells
     function buildBoard(){
       board.innerHTML = '';
       cells.length = 0;
@@ -252,17 +257,24 @@
       gameInterval = setInterval(move, speed);
     }
 
-    // Particles (subtle)
+    // Particles
     let particles = [];
     function resizeParticles(){
       const rect = board.getBoundingClientRect();
       if (!pctx) return;
+      // place canvas over the board by positioning within board's offsetParent
+      const parent = board.parentElement;
+      const parentRect = parent.getBoundingClientRect();
+      const offsetLeft = rect.left - parentRect.left;
+      const offsetTop = rect.top - parentRect.top;
+      particlesCanvas.style.position = 'absolute';
+      particlesCanvas.style.left = offsetLeft + 'px';
+      particlesCanvas.style.top = offsetTop + 'px';
       particlesCanvas.width = Math.round(rect.width);
       particlesCanvas.height = Math.round(rect.height);
-      particlesCanvas.style.left = board.offsetLeft + 'px';
-      particlesCanvas.style.top = board.offsetTop + 'px';
       particlesCanvas.style.width = rect.width + 'px';
       particlesCanvas.style.height = rect.height + 'px';
+      particlesCanvas.style.pointerEvents = 'none';
     }
 
     window.addEventListener('resize', resizeParticles);
@@ -314,7 +326,7 @@
     }
     requestAnimationFrame(particlesLoop);
 
-    // Movement & game logic (kept original)
+    // Movement & game logic
     function move(){
       if (isCounting) return;
       if (nextDirection){
@@ -410,18 +422,6 @@
       showOverlayMessage('Bạn đã rời phòng', 'OK', ()=>{});
     });
 
-    // Toast (small feedback)
-    function toast(msg){
-      const el = document.createElement('div');
-      el.textContent = msg;
-      el.style.position='fixed';el.style.left='50%';el.style.transform='translateX(-50%)';
-      el.style.bottom='28px';el.style.padding='10px 16px';el.style.background='linear-gradient(90deg,var(--accent-2),var(--accent-3))';
-      el.style.color='#fff';el.style.borderRadius='12px';el.style.boxShadow='0 10px 30px rgba(2,6,23,0.6)';el.style.zIndex='200';
-      document.body.appendChild(el);
-      setTimeout(()=> el.style.opacity='0.98',20);
-      setTimeout(()=>{ el.style.transition='opacity 300ms'; el.style.opacity='0'; setTimeout(()=> el.remove(),350); },1500);
-    }
-
     // stop & lobby hint
     function stopAndReset(){
       if (gameInterval) clearInterval(gameInterval);
@@ -451,13 +451,12 @@
       setTimeout(()=> div.remove(), 3200);
     }
 
-    // initial resize & start
+    // initial sizing & start
     setTimeout(()=> {
       resizeParticles();
       resetGame(0);
-    }, 140);
+    }, 120);
   </script>
 </body>
 </html>
-
 
