@@ -2,281 +2,166 @@
 <html lang="vi">
 <head>
   <meta charset="utf-8" />
-  <title>Snake Game — VIP Pro</title>
+  <title>Snake Game — Clean Graphical</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     :root{
-      --bg-1: #071028;
-      --bg-2: #081025;
-      --card: rgba(255,255,255,0.04);
-      --glass: rgba(255,255,255,0.04);
+      --bg-1: #061024;
+      --bg-2: #081426;
       --muted: #9fb0c8;
-      --accent-a: #7c5cff;
-      --accent-b: #00d4ff;
-      --snake: linear-gradient(180deg,#6fb0ff,#2b8aef);
-      --food: linear-gradient(180deg,#ffd27a,#ff8b4f);
-      --block: linear-gradient(180deg,#2b2f36,#4a4f58);
-      --glass-border: rgba(255,255,255,0.05);
-      --glass-2: rgba(255,255,255,0.02);
-      --shadow: 0 8px 30px rgba(2,6,23,0.7);
-      --rounded: 12px;
-      --cell-size: 28px;
+      --accent-2: #7c5cff;
+      --accent-3: #00d4ff;
+      --cell-size: 26px;
       --gap: 4px;
+      --rounded: 12px;
+      --shadow-lg: 0 14px 40px rgba(1,6,20,0.7);
     }
-
-    *{box-sizing:border-box;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;}
-    html,body{height:100%;margin:0;background:
-      radial-gradient(800px 500px at 10% 10%, rgba(124,92,255,0.10), transparent 8%),
-      radial-gradient(600px 300px at 90% 90%, rgba(0,212,255,0.06), transparent 8%),
-      linear-gradient(180deg,var(--bg-1),var(--bg-2));
-      color:#e9f2ff;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
-    }
-
-    .wrap{
-      max-width:1160px;margin:34px auto;padding:18px;
-      display:flex;gap:22px;align-items:flex-start;justify-content:center;
-    }
-
-    .left, .right{flex:0 0 auto;}
-    .left{width:360px;}
-    .card{
-      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border-radius:var(--rounded);padding:16px;border:1px solid var(--glass-border);
-      box-shadow:var(--shadow);
-      backdrop-filter: blur(6px);
-    }
-
-    .brand{display:flex;gap:12px;align-items:center;margin-bottom:8px}
-    .logo{
-      width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,var(--accent-a),var(--accent-b));
-      display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:18px;box-shadow:0 10px 30px rgba(124,92,255,0.12);
-    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;background:
+      radial-gradient(800px 400px at 10% 10%, rgba(124,92,255,0.06), transparent 8%),
+      radial-gradient(600px 300px at 90% 90%, rgba(0,212,255,0.04), transparent 8%),
+      linear-gradient(180deg,var(--bg-1),var(--bg-2));color:#e8f3ff;-webkit-font-smoothing:antialiased;}
+    .container{max-width:1120px;margin:40px auto;padding:18px;display:flex;gap:20px;align-items:flex-start;justify-content:center}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:14px;padding:16px;border:1px solid rgba(255,255,255,0.03);box-shadow:var(--shadow-lg);backdrop-filter:blur(6px)}
+    .header{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+    .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent-2),var(--accent-3));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:18px}
     h1{margin:0;font-size:20px}
     .subtitle{color:var(--muted);font-size:13px;margin-top:6px}
 
-    .me{display:flex;gap:12px;align-items:center}
-    .avatar{
-      width:70px;height:70px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:22px;color:white;
-      box-shadow:0 10px 30px rgba(2,6,23,0.6);
-    }
-    .meinfo .name{font-weight:800}
-    .meinfo .id{color:var(--muted);font-size:13px;margin-top:6px}
+    .layout{display:flex;gap:22px;align-items:flex-start;justify-content:center;width:100%}
+    .leftPanel{width:320px;flex:0 0 320px}
+    .centerPanel{flex:1;display:flex;flex-direction:column;gap:12px;align-items:center}
 
-    .inputRow{display:flex;gap:8px;margin-top:12px}
-    input[type="text"]{
-      flex:1;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      color:inherit;outline:none;transition:box-shadow .18s, transform .12s;
-    }
-    input[type="text"]:focus{box-shadow:0 8px 24px rgba(0,0,0,0.5) inset, 0 0 0 6px rgba(124,92,255,0.06)}
-    select{padding:10px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);border:1px solid rgba(255,255,255,0.04);color:inherit}
+    .infoCard{display:flex;flex-direction:column;gap:10px}
+    .infoRow{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:13px}
 
-    .btn{
-      padding:10px 14px;border-radius:12px;border:none;background:linear-gradient(90deg,var(--accent-a),var(--accent-b));
-      color:white;font-weight:700;cursor:pointer;box-shadow:0 10px 30px rgba(124,92,255,0.18);transition:transform .12s, box-shadow .12s, opacity .12s;
-    }
-    .btn:active{transform:translateY(1px)}
-    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted);box-shadow:none}
-
-    .playersList{margin-top:14px;display:flex;flex-direction:column;gap:10px;max-height:420px;overflow:auto;padding-right:6px}
-    .playerRow{display:flex;align-items:center;gap:10px;padding:8px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);border:1px solid rgba(255,255,255,0.02)}
-    .playerRow .pName{font-weight:700}
-    .playerRow .pId{color:var(--muted);font-size:12px;margin-left:auto}
-    .pMeta{display:flex;flex-direction:column}
-
-    /* RIGHT / Game */
-    .gameWrap{flex:1;min-width:420px}
-    .statusRow{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-    .hint{color:var(--muted);font-size:13px}
-    .boardCard{
-      position:relative;padding:18px;border-radius:14px;border:1px solid rgba(255,255,255,0.03);
-      background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));box-shadow:var(--shadow);
-    }
-
-    /* grid board */
+    /* board */
+    .boardCard{position:relative;border-radius:14px;padding:18px;border:1px solid rgba(255,255,255,0.03);box-shadow:var(--shadow-lg);background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent)}
     #game-board{
       --cell: var(--cell-size);
+      width: calc(15 * var(--cell) + 14 * var(--gap));
+      height: calc(15 * var(--cell) + 14 * var(--gap));
       display:grid;
       grid-template-columns: repeat(15, var(--cell));
       grid-template-rows: repeat(15, var(--cell));
       gap: var(--gap);
-      background: linear-gradient(180deg, rgba(255,255,255,0.015), transparent);
-      padding: calc(var(--gap));
-      border-radius: 12px;
-      width: calc(15 * var(--cell) + 14 * var(--gap));
-      height: calc(15 * var(--cell) + 14 * var(--gap));
       margin:auto;
+      background: linear-gradient(180deg, rgba(255,255,255,0.012), transparent);
+      padding: var(--gap);
+      border-radius: 10px;
       touch-action: none;
     }
-
-    .cell{
-      width: var(--cell); height: var(--cell); border-radius:8px; background:linear-gradient(180deg,#0e1520,#0a1118);
-      transition: background 140ms linear, transform 120ms ease, box-shadow 160ms ease;
-      position:relative; overflow:hidden;
-    }
-
-    /* snake look */
-    .cell.snake{
-      background: var(--snake);
-      box-shadow: 0 6px 18px rgba(43,138,239,0.28), inset 0 -6px 18px rgba(255,255,255,0.06);
-      transform: scale(1.02);
-    }
-    /* head highlight */
-    .cell.snake.head::after{
-      content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:0 8px 30px rgba(43,138,239,0.28), 0 0 18px rgba(124,92,255,0.08);
-      pointer-events:none;opacity:0.95;mix-blend-mode:screen;
-    }
-
-    /* food look with pulse */
-    .cell.food{
-      background: var(--food);
-      box-shadow:0 8px 20px rgba(255,139,79,0.18), inset 0 -6px 12px rgba(255,255,255,0.08);
-      transform: scale(1.03);
-      animation: food-pulse 1100ms infinite;
-    }
-    @keyframes food-pulse{
-      0%{transform:scale(0.98);filter:brightness(1)}
-      50%{transform:scale(1.08);filter:brightness(1.06)}
-      100%{transform:scale(0.98);filter:brightness(1)}
-    }
-
-    .cell.block{
-      background: var(--block);
-      box-shadow: inset 0 -6px 12px rgba(0,0,0,0.4);
-      transform: none;
-    }
-
-    /* controls */
+    .cell{width:var(--cell);height:var(--cell);border-radius:8px;background:linear-gradient(180deg,#0e1520,#0a1118);transition:transform .12s, background .12s, box-shadow .12s;position:relative;overflow:hidden}
+    .cell.snake{background:linear-gradient(180deg,#7fc4ff,#2b8aef);box-shadow:0 8px 22px rgba(43,138,239,0.2);transform:scale(1.03)}
+    .cell.snake.head::after{content:'';position:absolute;inset:0;border-radius:inherit;box-shadow:0 8px 30px rgba(43,138,239,0.28), 0 0 18px rgba(124,92,255,0.06);mix-blend-mode:screen}
+    .cell.food{background:linear-gradient(180deg,#ffd27a,#ff9a5a);box-shadow:0 10px 26px rgba(255,139,79,0.18);transform:scale(1.05);animation:foodPulse 1100ms infinite}
+    @keyframes foodPulse{0%{transform:scale(0.98)}50%{transform:scale(1.08)}100%{transform:scale(0.98)}}
+    .cell.block{background:linear-gradient(180deg,#2b2f36,#4a4f58);box-shadow:inset 0 -6px 12px rgba(0,0,0,0.4)}
     .controls{display:flex;gap:8px;justify-content:center;margin-top:12px}
-    .controls button{min-width:56px;border-radius:10px;padding:8px 10px;font-weight:700}
+    .btn{padding:10px 14px;border-radius:12px;border:none;background:linear-gradient(90deg,var(--accent-2),var(--accent-3));color:white;font-weight:700;cursor:pointer;box-shadow:0 8px 26px rgba(124,92,255,0.14);transition:transform .12s}
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted);box-shadow:none}
+    .btn:active{transform:translateY(1px)}
+    .controls .btn{min-width:56px;border-radius:10px;padding:8px 12px}
+    #overlay{display:none;position:fixed;inset:0;z-index:1000;background:rgba(1,6,20,0.7);backdrop-filter:blur(6px);align-items:center;justify-content:center}
+    .overlay-inner{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);text-align:center;min-width:320px;max-width:92%}
+    .count{font-size:3rem;font-weight:800;margin:10px 0}
+    footer{color:var(--muted);text-align:center;margin-top:22px;font-size:13px}
 
-    /* overlay / modal */
-    #overlay{
-      display:none;position:fixed;inset:0;z-index:120;align-items:center;justify-content:center;background:linear-gradient(rgba(3,8,20,0.65), rgba(3,8,20,0.75));
-      backdrop-filter: blur(6px);
-      color:#fff;flex-direction:column;padding:18px;
-    }
-    .overlay-card{
-      width:420px;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);padding:20px;border-radius:14px;border:1px solid rgba(255,255,255,0.04);
-      text-align:center;box-shadow:0 20px 60px rgba(2,6,23,0.8);
-    }
-    .countdown{font-size:3.4rem;font-weight:800;margin:12px 0;letter-spacing:1px}
-    .overlay-btn{margin-top:10px;padding:10px 18px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--accent-a),var(--accent-b));color:white;font-weight:800}
-
-    footer{margin-top:16px;text-align:center;color:var(--muted);font-size:12px}
     @media (max-width:920px){
-      .wrap{flex-direction:column;padding:12px}
-      .left{width:100%}
-      .gameWrap{width:100%}
-      #game-board{transform:scale(.9);transform-origin:center; margin:auto}
+      .container{padding:12px}
+      .layout{flex-direction:column;align-items:center}
+      .leftPanel{width:100%}
+      #game-board{transform:scale(.92);transform-origin:center;margin:auto}
     }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="left">
-      <div class="card">
-        <div class="brand"><div class="logo">QM</div><div><h1>Snake — VIP Pro</h1><div class="subtitle">Hiệu ứng mượt — đồ họa nâng cao</div></div></div>
-        <div class="me" style="margin-top:12px">
-          <div id="avatar" class="avatar" style="background:linear-gradient(135deg,#7c5cff,#00d4ff)">P</div>
-          <div class="meinfo">
-            <div class="name" id="meName">Player</div>
-            <div class="id" id="meId">ID: 100...002</div>
-            <div class="small subtitle" style="margin-top:6px">Tên tạm — đổi nếu muốn. Tên đang online là duy nhất.</div>
+  <div class="container">
+    <div class="layout">
+      <div class="leftPanel">
+        <div class="card">
+          <div class="header">
+            <div class="logo">S</div>
+            <div>
+              <h1>Snake — Clean</h1>
+              <div class="subtitle">Đẹp & mượt — không có đăng nhập</div>
+            </div>
+          </div>
+
+          <div class="infoCard" style="margin-top:12px">
+            <div class="infoRow"><div>Score</div><div id="scoreDisplay">0</div></div>
+            <div class="infoRow"><div>Level</div><div id="levelDisplay">1</div></div>
+            <div class="infoRow"><div>Status</div><div id="statusText">Đang ở Lobby</div></div>
+            <div style="margin-top:12px;color:var(--muted);font-size:13px">Hướng dẫn: mũi tên / WASD • Hỗ trợ chạm trên mobile</div>
+            <div style="display:flex;gap:8px;margin-top:12px">
+              <button id="resetBtn" class="btn ghost">Reset</button>
+              <button id="leaveBtn" class="btn ghost">Thoát</button>
+            </div>
           </div>
         </div>
-
-        <div class="inputRow">
-          <input id="nameInput" type="text" placeholder="Đổi tên hiển thị (tùy chọn)">
-          <button id="setNameBtn" class="btn ghost">Đổi</button>
-        </div>
-
-        <div class="inputRow" style="margin-top:12px">
-          <input id="inviteInput" type="text" placeholder="Nhập tên hoặc ID để mời">
-          <select id="modeSelect"><option value="coop">Co-op</option><option value="pvp">PvP</option></select>
-          <button id="inviteBtn" class="btn">Mời</button>
-        </div>
-
-        <div class="playersList" id="playersList" aria-live="polite" style="margin-top:14px"></div>
-
-        <div style="display:flex;gap:8px;margin-top:12px">
-          <button id="refreshBtn" class="btn ghost">Làm mới</button>
-          <button id="copyIdBtn" class="btn ghost">Sao chép ID</button>
-        </div>
-
-        <div style="margin-top:10px;color:var(--muted);font-size:13px">Score: <span id="scoreText">0</span> &nbsp;|&nbsp; Level: <span id="levelText">1</span></div>
-      </div>
-    </div>
-
-    <div class="gameWrap">
-      <div class="statusRow">
-        <div><strong>Trạng thái:</strong> <span id="statusText">Đang ở Lobby</span></div>
-        <div class="hint">Di chuyển: mũi tên / WASD • Touch hỗ trợ</div>
       </div>
 
-      <div class="boardCard card" style="padding:20px">
-        <div id="game-board" aria-label="Game board" role="application"></div>
-        <!-- particle canvas on top -->
-        <canvas id="particles" style="position:absolute;left:0;top:0;pointer-events:none;"></canvas>
+      <div class="centerPanel">
+        <div class="boardCard card">
+          <div id="game-board" aria-label="game board"></div>
+          <canvas id="particles" style="position:absolute;left:0;top:0;pointer-events:none;"></canvas>
 
-        <div class="controls" style="margin-top:12px;justify-content:center">
-          <button id="up" class="btn ghost">▲</button>
-          <button id="left" class="btn ghost">◀</button>
-          <button id="down" class="btn ghost">▼</button>
-          <button id="right" class="btn ghost">▶</button>
-        </div>
-
-        <div style="display:flex;justify-content:flex-end;margin-top:12px">
-          <button id="leaveBtn" class="btn ghost">Thoát game</button>
+          <div class="controls">
+            <button id="up" class="btn ghost">▲</button>
+            <button id="left" class="btn ghost">◀</button>
+            <button id="down" class="btn ghost">▼</button>
+            <button id="right" class="btn ghost">▶</button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <div id="overlay" aria-hidden="true">
-    <div class="overlay-card">
-      <div id="overlayTitle" style="font-weight:800;font-size:1.2rem">Thông báo</div>
-      <div id="overlayBody" style="color:var(--muted);margin-top:12px"></div>
-      <div id="countdown" class="countdown" style="margin-top:8px"></div>
-      <div style="margin-top:12px"><button id="overlayBtn" class="overlay-btn" style="display:none">OK</button></div>
+  <div id="overlay" role="dialog" aria-hidden="true">
+    <div class="overlay-inner">
+      <div id="overlayMsg" style="font-weight:700;"></div>
+      <div id="countdown" class="count"></div>
+      <div style="margin-top:12px"><button id="overlayBtn" class="btn" style="display:none">OK</button></div>
     </div>
   </div>
 
-  <footer>&copy; <span id="currentYear"></span> QVDROYAL/Snake VIP. All rights reserved.</footer>
+  <footer>&copy; <span id="year"></span> Snake Game — Clean Edition</footer>
 
   <script>
-    // auto year
-    document.getElementById('currentYear').textContent = new Date().getFullYear();
+    // Auto year
+    document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Basic game variables
+    // Game constants & elements
     const boardSize = 15;
     const board = document.getElementById('game-board');
-    const scoreText = document.getElementById('scoreText');
-    const levelText = document.getElementById('levelText');
+    const scoreDisplay = document.getElementById('scoreDisplay');
+    const levelDisplay = document.getElementById('levelDisplay');
     const statusText = document.getElementById('statusText');
     const overlay = document.getElementById('overlay');
-    const overlayTitle = document.getElementById('overlayTitle');
-    const overlayBody = document.getElementById('overlayBody');
+    const overlayMsg = document.getElementById('overlayMsg');
     const overlayBtn = document.getElementById('overlayBtn');
     const countdownEl = document.getElementById('countdown');
+    const particlesCanvas = document.getElementById('particles');
+    const pctx = particlesCanvas.getContext ? particlesCanvas.getContext('2d') : null;
 
     let snake, direction, food, score, gameInterval, foodEaten, level;
     let nextDirection = null;
     let isCounting = false;
     const cells = [];
 
-    // levels map
+    // Level maps
     const levels = [
       Array(boardSize).fill(0).map(() => Array(boardSize).fill(0)),
       Array(boardSize).fill(0).map((_, y) => Array(boardSize).fill(0).map((_, x) => (x === 0 || x === boardSize-1 || y === 0 || y === boardSize-1) ? 1 : 0)),
       Array(boardSize).fill(0).map((_, y) => Array(boardSize).fill(0).map((_, x) => (x === Math.floor(boardSize/2) || y === Math.floor(boardSize/2)) ? 1 : 0)),
     ];
 
-    // Create board cells
-    function buildBoard() {
+    // Build board
+    function buildBoard(){
       board.innerHTML = '';
       cells.length = 0;
-      for (let y = 0; y < boardSize; y++) {
-        for (let x = 0; x < boardSize; x++) {
+      for (let y=0; y<boardSize; y++){
+        for (let x=0; x<boardSize; x++){
           const cell = document.createElement('div');
           cell.className = 'cell';
           cell.dataset.x = x; cell.dataset.y = y;
@@ -284,33 +169,29 @@
           cells.push(cell);
         }
       }
-      // resize and position particles canvas
-      resizeParticleCanvas();
+      resizeParticles();
+      drawLobbyHint();
     }
-
     buildBoard();
 
     function getIndex(x,y){ return y * boardSize + x; }
 
     function draw(){
-      cells.forEach(c => c.className = 'cell'); // reset
-      // draw blocks
+      cells.forEach(c => c.className = 'cell');
       for (let y=0;y<boardSize;y++){
         for (let x=0;x<boardSize;x++){
           if (levels[level][y][x] === 1) cells[getIndex(x,y)].classList.add('block');
         }
       }
-      // draw snake
       snake.forEach((part, idx) => {
         const c = cells[getIndex(part.x, part.y)];
         c.classList.add('snake');
         if (idx === 0) c.classList.add('head');
       });
-      // draw food
       cells[getIndex(food.x, food.y)].classList.add('food');
     }
 
-    function getRandomEmptyCell(levelIdx) {
+    function getRandomEmptyCell(levelIdx){
       const empty = [];
       for (let y=0;y<boardSize;y++){
         for (let x=0;x<boardSize;x++){
@@ -320,145 +201,120 @@
       return empty[Math.floor(Math.random()*empty.length)];
     }
 
-    function countdownStart(lv=0) {
-      isCounting = true;
+    // Overlay / countdown
+    function showOverlayMessage(html, buttonText, onButton){
+      overlayMsg.innerHTML = html;
+      countdownEl.textContent = '';
+      overlayBtn.style.display = buttonText ? 'inline-block' : 'none';
+      if (buttonText) overlayBtn.textContent = buttonText;
       overlay.style.display = 'flex';
-      overlayBtn.style.display = 'none';
-      overlayTitle.textContent = 'Sẵn sàng';
-      overlayBody.textContent = `Bắt đầu level ${lv+1}`;
-      let count = 3;
-      countdownEl.textContent = count;
-      const tick = () => {
-        count--;
-        if (count >= 0) {
-          countdownEl.textContent = count > 0 ? count : 'GO!';
-          setTimeout(tick, 800);
-        } else {
-          overlay.style.display = 'none';
-          countdownEl.textContent = '';
-          isCounting = false;
-          startGame(lv);
-        }
-      };
-      setTimeout(tick, 800);
-    }
-
-    function showOverlay(msg, btnText, onBtn) {
-      overlay.style.display = 'flex';
-      overlayTitle.textContent = btnText ? 'Thông báo' : 'Thông báo';
-      overlayBody.innerHTML = msg;
-      if (btnText) {
-        overlayBtn.textContent = btnText;
-        overlayBtn.style.display = 'inline-block';
+      if (buttonText){
         overlayBtn.onclick = () => {
           overlay.style.display = 'none';
           overlayBtn.style.display = 'none';
-          if (onBtn) onBtn();
+          if (onButton) onButton();
         };
-      } else {
-        overlayBtn.style.display = 'none';
       }
     }
 
-    function resetGame(lv=0){
-      countdownStart(lv);
+    function countdownStart(lv=0){
+      isCounting = true;
+      overlay.style.display = 'flex';
+      overlayBtn.style.display = 'none';
+      overlayMsg.textContent = `Bắt đầu Level ${lv+1}`;
+      let count = 3;
+      countdownEl.textContent = count;
+      const tick = setInterval(()=>{
+        count--;
+        if (count >= 0) countdownEl.textContent = count > 0 ? count : 'GO!';
+        else { clearInterval(tick); overlay.style.display = 'none'; countdownEl.textContent = ''; isCounting = false; startGame(lv); }
+      }, 700);
     }
+
+    function resetGame(lv=0){ countdownStart(lv); }
 
     function startGame(lv=0){
       level = lv;
-      // spawn snake
-      let spawn = getRandomEmptyCell(level);
+      const spawn = getRandomEmptyCell(level);
       snake = [spawn];
       direction = {x:0,y:-1};
       nextDirection = null;
-      // place food
-      let foodSpawn;
-      do { foodSpawn = getRandomEmptyCell(level); } while (foodSpawn.x === spawn.x && foodSpawn.y === spawn.y);
-      food = foodSpawn;
+      let f;
+      do { f = getRandomEmptyCell(level); } while (f.x === spawn.x && f.y === spawn.y);
+      food = f;
       score = 0; foodEaten = 0;
-      scoreText.textContent = score;
-      levelText.textContent = level+1;
-      statusText.textContent = 'Playing';
+      scoreDisplay.textContent = score;
+      levelDisplay.textContent = level+1;
+      statusText.textContent = 'Đang chơi';
       draw();
       if (gameInterval) clearInterval(gameInterval);
-      // make speed slightly increase with level
-      const speed = Math.max(80, 160 - level*20);
+      const speed = Math.max(70, 150 - level*20);
       gameInterval = setInterval(move, speed);
     }
 
-    // Particle system
-    const particleCanvas = document.getElementById('particles');
-    const pctx = particleCanvas.getContext('2d');
+    // Particles (subtle)
     let particles = [];
-    function resizeParticleCanvas(){
-      const br = board.getBoundingClientRect();
-      particleCanvas.width = Math.round(br.width);
-      particleCanvas.height = Math.round(br.height);
-      particleCanvas.style.left = br.left + 'px';
-      particleCanvas.style.top = br.top + 'px';
-      particleCanvas.style.width = br.width + 'px';
-      particleCanvas.style.height = br.height + 'px';
-      particleCanvas.style.pointerEvents = 'none';
+    function resizeParticles(){
+      const rect = board.getBoundingClientRect();
+      if (!pctx) return;
+      particlesCanvas.width = Math.round(rect.width);
+      particlesCanvas.height = Math.round(rect.height);
+      particlesCanvas.style.left = board.offsetLeft + 'px';
+      particlesCanvas.style.top = board.offsetTop + 'px';
+      particlesCanvas.style.width = rect.width + 'px';
+      particlesCanvas.style.height = rect.height + 'px';
     }
-    window.addEventListener('resize', resizeParticleCanvas);
-    // spawn particles at cell coordinate (board relative)
-    function spawnParticles(cellX, cellY, color='#ffd27a'){
-      const cell = cells[getIndex(cellX, cellY)];
-      const boardRect = board.getBoundingClientRect();
-      const cellRect = cell.getBoundingClientRect();
-      // compute center relative to particle canvas
-      const cx = (cellRect.left - boardRect.left) + cellRect.width/2;
-      const cy = (cellRect.top - boardRect.top) + cellRect.height/2;
-      const count = 18;
+
+    window.addEventListener('resize', resizeParticles);
+
+    function spawnParticles(x,y, color='#ffd27a'){
+      if (!pctx) return;
+      const br = board.getBoundingClientRect();
+      const cell = cells[getIndex(x,y)];
+      const cr = cell.getBoundingClientRect();
+      const cx = (cr.left - br.left) + cr.width/2;
+      const cy = (cr.top - br.top) + cr.height/2;
+      const count = 10 + Math.floor(Math.random()*10);
       for (let i=0;i<count;i++){
         particles.push({
-          x: cx + (Math.random()-0.5)*10,
-          y: cy + (Math.random()-0.5)*10,
-          vx: (Math.random()-0.5)*6,
-          vy: (Math.random()-1.8)*6 - 2,
-          life: 800 + Math.random()*400,
-          ttl: 800 + Math.random()*400,
-          color: color,
-          size: 2 + Math.random()*3
+          x: cx + (Math.random()-0.5)*12,
+          y: cy + (Math.random()-0.5)*12,
+          vx: (Math.random()-0.5)*4,
+          vy: (Math.random()-1.5)*6 - 1,
+          life: 600 + Math.random()*600,
+          ttl: 600 + Math.random()*600,
+          size: 1 + Math.random()*3,
+          color
         });
       }
     }
-    function updateParticles(dt){
-      // dt in ms
-      pctx.clearRect(0,0,particleCanvas.width, particleCanvas.height);
-      const now = Date.now();
-      for (let i = particles.length-1; i>=0; i--){
-        const p = particles[i];
-        p.x += p.vx * (dt/16);
-        p.y += p.vy * (dt/16);
-        p.vy += 0.18 * (dt/16); // gravity
-        p.life -= dt;
-        const alpha = Math.max(0, p.life / p.ttl);
-        pctx.globalAlpha = alpha;
-        pctx.fillStyle = p.color;
-        pctx.beginPath();
-        pctx.ellipse(p.x, p.y, p.size, p.size, 0, 0, Math.PI*2);
-        pctx.fill();
-        if (p.life <= 0){
-          particles.splice(i,1);
-        }
-      }
-    }
-    let lastParticlesTime = performance.now();
+
+    let lastTime = performance.now();
     function particlesLoop(now){
-      const dt = now - lastParticlesTime;
-      lastParticlesTime = now;
-      if (particles.length > 0){
-        updateParticles(dt);
-      } else {
-        // clear occasionally to avoid stale
-        if (pctx && particleCanvas.width) pctx.clearRect(0,0,particleCanvas.width, particleCanvas.height);
+      const dt = now - lastTime;
+      lastTime = now;
+      if (pctx){
+        pctx.clearRect(0,0,particlesCanvas.width,particlesCanvas.height);
+        for (let i = particles.length-1; i>=0; i--){
+          const p = particles[i];
+          p.x += p.vx * (dt/16);
+          p.y += p.vy * (dt/16);
+          p.vy += 0.12 * (dt/16);
+          p.life -= dt;
+          const alpha = Math.max(0, p.life / p.ttl);
+          pctx.globalAlpha = alpha;
+          pctx.fillStyle = p.color;
+          pctx.beginPath();
+          pctx.ellipse(p.x, p.y, p.size, p.size, 0, 0, Math.PI*2);
+          pctx.fill();
+          if (p.life <= 0) particles.splice(i,1);
+        }
       }
       requestAnimationFrame(particlesLoop);
     }
     requestAnimationFrame(particlesLoop);
 
-    // Move logic
+    // Movement & game logic (kept original)
     function move(){
       if (isCounting) return;
       if (nextDirection){
@@ -468,33 +324,29 @@
         nextDirection = null;
       }
       let head = {x: snake[0].x + direction.x, y: snake[0].y + direction.y};
-      // wrap-around
       if (head.x < 0) head.x = boardSize - 1;
       if (head.x >= boardSize) head.x = 0;
       if (head.y < 0) head.y = boardSize - 1;
       if (head.y >= boardSize) head.y = 0;
-      // collision
       if (snake.some(p => p.x === head.x && p.y === head.y) || levels[level][head.y][head.x] === 1){
         clearInterval(gameInterval);
         spawnParticles(head.x, head.y, '#ff6b6b');
-        showOverlay(`Game Over!<br>Score: ${score}<br>Quay về Level 1`, 'Chơi lại', () => resetGame(0));
+        showOverlayMessage(`Game Over!<br>Score: ${score}<br>Quay về Level 1`, 'Chơi lại', ()=>resetGame(0));
         statusText.textContent = 'Game Over';
         return;
       }
       snake.unshift(head);
       if (head.x === food.x && head.y === food.y){
-        // ate
         score++; foodEaten++;
-        scoreText.textContent = score;
+        scoreDisplay.textContent = score;
         spawnParticles(head.x, head.y, '#ffb347');
-        // level completion
         if (foodEaten >= 30){
           clearInterval(gameInterval);
           if (level < levels.length-1){
-            showOverlay(`Chúc mừng!<br>Bạn đã qua Level ${level+1}`, 'Tiếp tục', () => resetGame(level+1));
+            showOverlayMessage(`Chúc mừng!<br>Bạn đã qua Level ${level+1}`, 'Tiếp tục', ()=>resetGame(level+1));
             return;
           } else {
-            showOverlay(`Bạn đã hoàn thành tất cả các level!`, 'Chơi lại', () => resetGame(0));
+            showOverlayMessage('Bạn đã hoàn thành tất cả các level!', 'Chơi lại', ()=>resetGame(0));
             return;
           }
         }
@@ -519,154 +371,91 @@
     document.getElementById('left').onclick = () => nextDirection = {x:-1,y:0};
     document.getElementById('right').onclick = () => nextDirection = {x:1,y:0};
 
-    document.addEventListener('keydown', e=>{
+    document.addEventListener('keydown', e => {
       if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') nextDirection = {x:0,y:-1};
       else if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') nextDirection = {x:0,y:1};
       else if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') nextDirection = {x:-1,y:0};
       else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') nextDirection = {x:1,y:0};
     });
 
-    // Touch swipe for mobile
+    // Touch swipe
     let touchStartX = 0, touchStartY = 0, touchMoved = false;
-    board.addEventListener('touchstart', e=>{
+    board.addEventListener('touchstart', function(e){
       if (e.touches.length === 1){
-        touchStartX = e.touches[0].clientX; touchStartY = e.touches[0].clientY; touchMoved = false;
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        touchMoved = false;
       }
     }, {passive:true});
-    board.addEventListener('touchmove', e=>{
+    board.addEventListener('touchmove', function(e){
       if (e.touches.length === 1 && !touchMoved){
-        const dx = e.touches[0].clientX - touchStartX; const dy = e.touches[0].clientY - touchStartY;
-        if (Math.abs(dx) > 28 || Math.abs(dy) > 28){
+        const dx = e.touches[0].clientX - touchStartX;
+        const dy = e.touches[0].clientY - touchStartY;
+        if (Math.abs(dx) > 30 || Math.abs(dy) > 30){
           touchMoved = true;
           let newDir = null;
-          if (Math.abs(dx) > Math.abs(dy)){
-            newDir = dx > 0 ? {x:1,y:0} : {x:-1,y:0};
-          } else {
-            newDir = dy > 0 ? {x:0,y:1} : {x:0,y:-1};
-          }
-          if (!(direction.x === -newDir.x && direction.y === -newDir.y)){
-            direction = newDir; nextDirection = null;
-          }
+          if (Math.abs(dx) > Math.abs(dy)) newDir = dx > 0 ? {x:1,y:0} : {x:-1,y:0};
+          else newDir = dy > 0 ? {x:0,y:1} : {x:0,y:-1};
+          if (!(direction.x === -newDir.x && direction.y === -newDir.y)) { direction = newDir; nextDirection = null; }
         }
       }
     }, {passive:true});
-    board.addEventListener('touchend', ()=>{ touchMoved = false; });
+    board.addEventListener('touchend', () => { touchMoved = false; });
 
-    // Responsive and helper UI
-    window.addEventListener('resize', ()=> {
-      resizeParticleCanvas();
-    });
-
-    // Buttons for name, refresh etc. (kept for compatibility)
-    document.getElementById('setNameBtn').addEventListener('click', ()=>{
-      const val = document.getElementById('nameInput').value.trim();
-      if (!val) return toast('Nhập tên');
-      document.getElementById('meName').textContent = val;
-      document.getElementById('avatar').textContent = val.split(' ').map(s=>s[0]).slice(0,2).join('').toUpperCase();
-      toast('Đổi tên thành công');
-    });
-
-    document.getElementById('refreshBtn').addEventListener('click', ()=> {
-      toast('Đã làm mới');
-    });
-    document.getElementById('copyIdBtn').addEventListener('click', ()=>{
-      navigator.clipboard && navigator.clipboard.writeText('100...002').then(()=>{ toast('Đã copy ID'); }).catch(()=>{toast('Không thể copy')});
-    });
-
+    // UI buttons
+    document.getElementById('resetBtn').addEventListener('click', ()=> resetGame(0));
     document.getElementById('leaveBtn').addEventListener('click', ()=>{
       if (gameInterval) clearInterval(gameInterval);
       stopAndReset();
-      showOverlay('Bạn đã rời phòng', 'OK', ()=>{});
+      showOverlayMessage('Bạn đã rời phòng', 'OK', ()=>{});
     });
 
-    // simple toast
+    // Toast (small feedback)
     function toast(msg){
-      const t = document.createElement('div');
-      t.textContent = msg;
-      t.style.position = 'fixed'; t.style.left = '50%'; t.style.transform = 'translateX(-50%)';
-      t.style.bottom = '28px'; t.style.padding = '10px 16px'; t.style.background = 'linear-gradient(90deg,var(--accent-a),var(--accent-b))';
-      t.style.color = '#fff'; t.style.borderRadius = '12px'; t.style.boxShadow = '0 10px 30px rgba(2,6,23,0.6)'; t.style.zIndex = '200';
-      document.body.appendChild(t);
-      setTimeout(()=> t.style.opacity = '0.98', 20);
-      setTimeout(()=> { t.style.transition = 'opacity 300ms'; t.style.opacity = '0'; setTimeout(()=> t.remove(), 350); }, 1500);
+      const el = document.createElement('div');
+      el.textContent = msg;
+      el.style.position='fixed';el.style.left='50%';el.style.transform='translateX(-50%)';
+      el.style.bottom='28px';el.style.padding='10px 16px';el.style.background='linear-gradient(90deg,var(--accent-2),var(--accent-3))';
+      el.style.color='#fff';el.style.borderRadius='12px';el.style.boxShadow='0 10px 30px rgba(2,6,23,0.6)';el.style.zIndex='200';
+      document.body.appendChild(el);
+      setTimeout(()=> el.style.opacity='0.98',20);
+      setTimeout(()=>{ el.style.transition='opacity 300ms'; el.style.opacity='0'; setTimeout(()=> el.remove(),350); },1500);
     }
 
-    // start / stop visuals
+    // stop & lobby hint
     function stopAndReset(){
-      if (animRequest) cancelAnimationFrame(animRequest);
-      currentRoom = null; // not used but keep pattern
+      if (gameInterval) clearInterval(gameInterval);
       statusText.textContent = 'Đang ở Lobby';
-      levelText.textContent = '—';
-      scoreText.textContent = '0';
-      // canvas hint
-      pctx.clearRect(0,0,particleCanvas.width,particleCanvas.height);
-      ctxClearAndHint();
+      levelDisplay.textContent = '—';
+      scoreDisplay.textContent = '0';
+      cells.forEach(c=> c.className='cell');
+      drawLobbyHint();
     }
 
-    // initial canvas for hint
-    const canvasHint = document.createElement('canvas');
-    canvasHint.width = 760; canvasHint.height = 340;
-    canvasHint.style.display = 'none';
-    // draw initial hint into actual particles canvas (cleared)
-    const ctx = document.createElement('canvas').getContext ? document.createElement('canvas').getContext('2d') : null;
-
-    function ctxClearAndHint(){
-      // clear board visuals
-      cells.forEach(c => c.className = 'cell');
-      // draw friendly text on board center by placing a temporary label
-      const centerX = Math.floor(boardSize/2), centerY = Math.floor(boardSize/2);
-      const centerCell = cells[getIndex(centerX, centerY)];
-      centerCell.style.position = 'relative';
-      // create hint overlay element
-      const hint = document.createElement('div');
-      hint.style.position = 'absolute';
-      hint.style.left = '50%'; hint.style.top = '50%'; hint.style.transform = 'translate(-50%,-50%)';
-      hint.style.pointerEvents = 'none'; hint.style.color = '#cfe9ff'; hint.style.fontWeight = '700'; hint.style.fontSize = '12px';
-      hint.innerHTML = 'Mời bạn hoặc nhận lời mời để chơi';
-      // remove any existing hints
+    function drawLobbyHint(){
       const prev = document.querySelector('.board-hint');
       if (prev) prev.remove();
-      hint.className = 'board-hint';
-      board.appendChild(hint);
-      setTimeout(()=> hint.remove(), 3000);
+      const div = document.createElement('div');
+      div.className = 'board-hint';
+      div.style.position = 'absolute';
+      div.style.left = '50%';
+      div.style.top = '50%';
+      div.style.transform = 'translate(-50%,-50%)';
+      div.style.pointerEvents = 'none';
+      div.style.color = '#cfe9ff';
+      div.style.fontWeight = '700';
+      div.style.fontSize = '13px';
+      div.style.letterSpacing = '0.2px';
+      div.textContent = 'Nhấn Reset để bắt đầu • Mũi tên / WASD để di chuyển';
+      board.appendChild(div);
+      setTimeout(()=> div.remove(), 3200);
     }
 
-    // ensure particle canvas positioned over board
-    resizeParticleCanvas();
-
-    // make first run
-    resetGame(0);
-
-    // particles RAF ID holder
-    let animRequest = null;
-    function raf(){
-      animRequest = requestAnimationFrame(raf);
-      // nothing extra; particles loop handled separately
-    }
-    raf();
-
-    // ensure particles canvas is placed over board (absolute)
-    (function placeCanvasOverBoard(){
-      const br = board.getBoundingClientRect();
-      particleCanvas.style.position = 'absolute';
-      particleCanvas.style.left = br.left + 'px';
-      particleCanvas.style.top = br.top + 'px';
-      const parent = document.querySelector('.boardCard');
-      if (parent) {
-        parent.style.position = 'relative';
-        particleCanvas.style.left = 0; particleCanvas.style.top = 0;
-        particleCanvas.style.width = parent.clientWidth + 'px';
-        particleCanvas.style.height = parent.clientHeight + 'px';
-        particleCanvas.width = parent.clientWidth;
-        particleCanvas.height = parent.clientHeight;
-        particleCanvas.style.pointerEvents = 'none';
-        // adjust transform to align with inner board
-        // We'll compute offsets when spawning particles using getBoundingClientRect() so it's robust
-      }
-    })();
-
-    // small safeguard: on first load, make sure particle canvas sized after layout
-    setTimeout(()=>{ resizeParticleCanvas(); }, 200);
+    // initial resize & start
+    setTimeout(()=> {
+      resizeParticles();
+      resetGame(0);
+    }, 140);
   </script>
 </body>
 </html>
